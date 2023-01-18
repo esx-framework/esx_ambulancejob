@@ -9,7 +9,7 @@ ESX Ambulance Job is an plugin for ESX with features:
 
 `Required`:
 
-- [esx_skin](https://github.com/esx-framework/esx-legacy/tree/main/%5Besx%5D/esx_skin)
+- [esx_skin](https://github.com/esx-framework/esx-legacy/tree/main/%5Bcore%5D/esx_skin)
 - [esx_vehicleshop](https://github.com/esx-framework/esx_vehicleshop)
 
 `Optional`:
