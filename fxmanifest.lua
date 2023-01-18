@@ -24,9 +24,7 @@ server_scripts {
 }
 
 client_scripts {
-	'client/main.lua',
-	'client/job.lua',
-	'client/vehicle.lua',
+	'client/*.lua'
 }
 
 dependencies {
