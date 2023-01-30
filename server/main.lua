@@ -81,12 +81,13 @@ AddEventHandler('esx_ambulancejob:onPlayerDistress', function()
 	local source = source
 	local injuredPed = GetPlayerPed(source)
 	local injuredCoords = GetEntityCoords(injuredPed)
+
 	if deadPlayers[source] then
 		deadPlayers[source] = 'distress'
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
 		for _, xPlayer in pairs(Ambulance) do
-			xPlayer.triggerEvent('esx_ambulancejob:PlayerDistressed', xPlayer.source, source, injuredCoords)
+			xPlayer.triggerEvent('esx_ambulancejob:PlayerDistressed', source, injuredCoords)
 		end
 	end
 end)
