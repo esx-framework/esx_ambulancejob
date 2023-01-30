@@ -1,45 +1,46 @@
 local playersHealing, deadPlayers = {}, {}
 
 if GetResourceState("esx_phone") ~= 'missing' then
-TriggerEvent('esx_phone:registerNumber', 'ambulance', TranslateCap('alert_ambulance'), true, true)
+	TriggerEvent('esx_phone:registerNumber', 'ambulance', TranslateCap('alert_ambulance'), true, true)
 end
 
 if GetResourceState("esx_society") ~= 'missing' then
-TriggerEvent('esx_society:registerSociety', 'ambulance', 'Ambulance', 'society_ambulance', 'society_ambulance', 'society_ambulance', {type = 'public'})
+	TriggerEvent('esx_society:registerSociety', 'ambulance', 'Ambulance', 'society_ambulance', 'society_ambulance',
+		'society_ambulance', { type = 'public' })
 end
 
 RegisterNetEvent('esx_ambulancejob:revive')
 AddEventHandler('esx_ambulancejob:revive', function(playerId)
 	playerId = tonumber(playerId)
-		local xPlayer = source and ESX.GetPlayerFromId(source)
+	local xPlayer = source and ESX.GetPlayerFromId(source)
 
-		if xPlayer and xPlayer.job.name == 'ambulance' then
-			local xTarget = ESX.GetPlayerFromId(playerId)
-			if xTarget then
-				if deadPlayers[playerId] then
-					if Config.ReviveReward > 0 then
-						xPlayer.showNotification(TranslateCap('revive_complete_award', xTarget.name, Config.ReviveReward))
-						xPlayer.addMoney(Config.ReviveReward, "Revive Reward")
-						xTarget.triggerEvent('esx_ambulancejob:revive')
-					else
-						xPlayer.showNotification(TranslateCap('revive_complete', xTarget.name))
-						xTarget.triggerEvent('esx_ambulancejob:revive')
-					end
-					local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
-
-					for _, xPlayer in pairs(Ambulance) do
-						if xPlayer.job.name == 'ambulance' then
-							xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
-						end
-					end
-					deadPlayers[playerId] = nil
+	if xPlayer and xPlayer.job.name == 'ambulance' then
+		local xTarget = ESX.GetPlayerFromId(playerId)
+		if xTarget then
+			if deadPlayers[playerId] then
+				if Config.ReviveReward > 0 then
+					xPlayer.showNotification(TranslateCap('revive_complete_award', xTarget.name, Config.ReviveReward))
+					xPlayer.addMoney(Config.ReviveReward, "Revive Reward")
+					xTarget.triggerEvent('esx_ambulancejob:revive')
 				else
-					xPlayer.showNotification(TranslateCap('player_not_unconscious'))
+					xPlayer.showNotification(TranslateCap('revive_complete', xTarget.name))
+					xTarget.triggerEvent('esx_ambulancejob:revive')
 				end
+				local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
+
+				for _, xPlayer in pairs(Ambulance) do
+					if xPlayer.job.name == 'ambulance' then
+						xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
+					end
+				end
+				deadPlayers[playerId] = nil
 			else
-				xPlayer.showNotification(TranslateCap('revive_fail_offline'))
+				xPlayer.showNotification(TranslateCap('player_not_unconscious'))
 			end
+		else
+			xPlayer.showNotification(TranslateCap('revive_fail_offline'))
 		end
+	end
 end)
 
 AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
@@ -66,24 +67,27 @@ AddEventHandler('esx:onPlayerDeath', function(data)
 	local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
 	for _, xPlayer in pairs(Ambulance) do
-			xPlayer.triggerEvent('esx_ambulancejob:PlayerDead', source)
+		xPlayer.triggerEvent('esx_ambulancejob:PlayerDead', source)
 	end
 end)
 
 RegisterServerEvent('esx_ambulancejob:svsearch')
 AddEventHandler('esx_ambulancejob:svsearch', function()
-  TriggerClientEvent('esx_ambulancejob:clsearch', -1, source)
+	TriggerClientEvent('esx_ambulancejob:clsearch', -1, source)
 end)
 
 RegisterNetEvent('esx_ambulancejob:onPlayerDistress')
 AddEventHandler('esx_ambulancejob:onPlayerDistress', function()
 	local source = source
+	local injuredPed = GetPlayerPed(source)
+	local injuredCoords = GetEntityCoords(injuredPed)
+
 	if deadPlayers[source] then
 		deadPlayers[source] = 'distress'
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
 		for _, xPlayer in pairs(Ambulance) do
-			TriggerClientEvent('esx_ambulancejob:PlayerDistressed', xPlayer.source, source)
+			xPlayer.triggerEvent('esx_ambulancejob:PlayerDistressed', source, injuredCoords)
 		end
 	end
 end)
@@ -96,7 +100,7 @@ AddEventHandler('esx:onPlayerSpawn', function()
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
 		for _, xPlayer in pairs(Ambulance) do
-				xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', source)
+			xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', source)
 		end
 	end
 end)
@@ -151,7 +155,7 @@ ESX.RegisterServerCallback('esx_ambulancejob:removeItemsAfterRPDeath', function(
 	end
 
 	if Config.RemoveItemsAfterRPDeath then
-		for i=1, #xPlayer.inventory, 1 do
+		for i = 1, #xPlayer.inventory, 1 do
 			if xPlayer.inventory[i].count > 0 then
 				xPlayer.setInventoryItem(xPlayer.inventory[i].name, 0)
 			end
@@ -162,18 +166,18 @@ ESX.RegisterServerCallback('esx_ambulancejob:removeItemsAfterRPDeath', function(
 
 	local playerLoadout = {}
 	if Config.RemoveWeaponsAfterRPDeath then
-		for i=1, #xPlayer.loadout, 1 do
+		for i = 1, #xPlayer.loadout, 1 do
 			xPlayer.removeWeapon(xPlayer.loadout[i].name)
 		end
 	else -- save weapons & restore em' since spawnmanager removes them
-		for i=1, #xPlayer.loadout, 1 do
+		for i = 1, #xPlayer.loadout, 1 do
 			table.insert(playerLoadout, xPlayer.loadout[i])
 		end
 
 		-- give back wepaons after a couple of seconds
 		CreateThread(function()
 			Wait(5000)
-			for i=1, #playerLoadout, 1 do
+			for i = 1, #playerLoadout, 1 do
 				if playerLoadout[i].label ~= nil then
 					xPlayer.addWeapon(playerLoadout[i].name, playerLoadout[i].ammo)
 				end
@@ -220,10 +224,11 @@ ESX.RegisterServerCallback('esx_ambulancejob:buyJobVehicle', function(source, cb
 		if xPlayer.getMoney() >= price then
 			xPlayer.removeMoney(price, "Job Vehicle Purchase")
 
-			MySQL.insert('INSERT INTO owned_vehicles (owner, vehicle, plate, type, job, `stored`) VALUES (?, ?, ?, ?, ?, ?)', {xPlayer.identifier, json.encode(vehicleProps), vehicleProps.plate, type, xPlayer.job.name, true},
-			function (rowsChanged)
-				cb(true)
-			end)
+			MySQL.insert('INSERT INTO owned_vehicles (owner, vehicle, plate, type, job, `stored`) VALUES (?, ?, ?, ?, ?, ?)',
+				{ xPlayer.identifier, json.encode(vehicleProps), vehicleProps.plate, type, xPlayer.job.name, true },
+				function(rowsChanged)
+					cb(true)
+				end)
 		else
 			cb(false)
 		end
@@ -233,17 +238,19 @@ end)
 ESX.RegisterServerCallback('esx_ambulancejob:storeNearbyVehicle', function(source, cb, plates)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
-	local plate = MySQL.scalar.await('SELECT plate FROM owned_vehicles WHERE owner = ? AND plate IN (?) AND job = ?', {xPlayer.identifier, plates, xPlayer.job.name})
+	local plate = MySQL.scalar.await('SELECT plate FROM owned_vehicles WHERE owner = ? AND plate IN (?) AND job = ?',
+		{ xPlayer.identifier, plates, xPlayer.job.name })
 
 	if plate then
-		MySQL.update('UPDATE owned_vehicles SET `stored` = true WHERE owner = ? AND plate = ? AND job = ?', {xPlayer.identifier, plate, xPlayer.job.name},
-		function(rowsChanged)
-			if rowsChanged == 0 then
-				cb(false)
-			else
-				cb(plate)
-			end
-		end)
+		MySQL.update('UPDATE owned_vehicles SET `stored` = true WHERE owner = ? AND plate = ? AND job = ?',
+			{ xPlayer.identifier, plate, xPlayer.job.name },
+			function(rowsChanged)
+				if rowsChanged == 0 then
+					cb(false)
+				else
+					cb(plate)
+				end
+			end)
 	else
 		cb(false)
 	end
@@ -279,10 +286,10 @@ AddEventHandler('esx_ambulancejob:giveItem', function(itemName, amount)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	if xPlayer.job.name ~= 'ambulance' then
-		print(('[^2WARNING^7] Player ^5%s^7 Tried Giving Themselves -> ^5' .. itemName ..'^7!'):format(xPlayer.source))
+		print(('[^2WARNING^7] Player ^5%s^7 Tried Giving Themselves -> ^5' .. itemName .. '^7!'):format(xPlayer.source))
 		return
 	elseif (itemName ~= 'medikit' and itemName ~= 'bandage') then
-		print(('[^2WARNING^7] Player ^5%s^7 Tried Giving Themselves -> ^5' .. itemName ..'^7!'):format(xPlayer.source))
+		print(('[^2WARNING^7] Player ^5%s^7 Tried Giving Themselves -> ^5' .. itemName .. '^7!'):format(xPlayer.source))
 		return
 	end
 
@@ -295,9 +302,9 @@ end)
 
 ESX.RegisterCommand('revive', 'admin', function(xPlayer, args, showError)
 	args.playerId.triggerEvent('esx_ambulancejob:revive')
-end, true, {help = TranslateCap('revive_help'), validate = true, arguments = {
-	{name = 'playerId', help = 'The player id', type = 'player'}
-}})
+end, true, { help = TranslateCap('revive_help'), validate = true, arguments = {
+	{ name = 'playerId', help = 'The player id', type = 'player' }
+} })
 
 ESX.RegisterCommand('reviveall', "admin", function(xPlayer, args, showError)
 	TriggerClientEvent('esx_ambulancejob:revive', -1)
@@ -331,14 +338,14 @@ end)
 
 ESX.RegisterServerCallback('esx_ambulancejob:getDeadPlayers', function(source, cb)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	if xPlayer.job.name == "ambulance" then 
+	if xPlayer.job.name == "ambulance" then
 		cb(deadPlayers)
 	end
 end)
 
 ESX.RegisterServerCallback('esx_ambulancejob:getDeathStatus', function(source, cb)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	MySQL.scalar('SELECT is_dead FROM users WHERE identifier = ?', {xPlayer.identifier}, function(isDead)
+	MySQL.scalar('SELECT is_dead FROM users WHERE identifier = ?', { xPlayer.identifier }, function(isDead)
 		cb(isDead)
 	end)
 end)
@@ -348,12 +355,12 @@ AddEventHandler('esx_ambulancejob:setDeathStatus', function(isDead)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	if type(isDead) == 'boolean' then
-		MySQL.update('UPDATE users SET is_dead = ? WHERE identifier = ?', {isDead, xPlayer.identifier})
-		
-		if not isDead then 
+		MySQL.update('UPDATE users SET is_dead = ? WHERE identifier = ?', { isDead, xPlayer.identifier })
+
+		if not isDead then
 			local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 			for _, xPlayer in pairs(Ambulance) do
-					xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', source)
+				xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', source)
 			end
 		end
 	end
