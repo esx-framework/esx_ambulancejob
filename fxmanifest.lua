@@ -1,7 +1,7 @@
 fx_version 'adamant'
 game 'gta5'
 description 'ESX Ambulance Job'
-version '1.0'
+version '1.0.1'
 legacyversion '1.9.1'
 lua54 'yes'
 
