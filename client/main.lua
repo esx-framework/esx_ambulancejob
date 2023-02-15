@@ -339,6 +339,7 @@ function RespawnPed(ped, coords, heading)
   SetPlayerInvincible(ped, false)
   ClearPedBloodDamage(ped)
 
+  TriggerEvent('esx_basicneeds:resetStatus')
   TriggerServerEvent('esx:onPlayerSpawn')
   TriggerEvent('esx:onPlayerSpawn')
   TriggerEvent('playerSpawned') -- compatibility with old scripts, will be removed soon
