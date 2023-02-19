@@ -160,6 +160,7 @@ function StoreNearbyVehicle(playerCoords)
 					for i = 1, #vehicles do
 						local vehicle = vehicles[i]
 						if ESX.Math.Trim(GetVehicleNumberPlateText(vehicle)) == plate then
+							NetworkRequestControlOfEntity(vehicle)
 							ESX.Game.DeleteVehicle(vehicle)
 							break
 						end
@@ -258,6 +259,15 @@ function OpenShopMenu(elements, restoreCoords, shopCoords)
 							end
 						end, props, element.type)
 					end
+				end, function()
+					isInShopMenu = false
+					ESX.CloseContext()
+
+					DeleteSpawnedVehicles()
+					FreezeEntityPosition(playerPed, false)
+					SetEntityVisible(playerPed, true)
+
+					ESX.Game.Teleport(playerPed, restoreCoords)
 				end)
 			end
 		end)

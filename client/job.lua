@@ -58,7 +58,7 @@ function OpenMobileAmbulanceActionsMenu()
 
 				if element2.value == 'search' then
 					TriggerServerEvent('esx_ambulancejob:svsearch')
-				elseif closestPlayer == -1 or closestDistance > 1.0 then
+				elseif closestPlayer == -1 or closestDistance > 2.0 then
 					ESX.ShowNotification(TranslateCap('no_players'))
 				else
 					if element2.value == 'revive' then
