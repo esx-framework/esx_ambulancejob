@@ -9,6 +9,20 @@ if GetResourceState("esx_society") ~= 'missing' then
 		'society_ambulance', { type = 'public' })
 end
 
+if Config.OxInventory then
+	local inventory = {}
+	for i = 1, #Config.PharmacyItems do
+		inventory[#inventory+1] = {name = Config.PharmacyItems[i].item, price = Config.PharmacyItems[i].price}
+	end
+	exports.ox_inventory:RegisterShop('pharmacy', {
+		name = TranslateCap('pharmacy_menu_title'),
+		inventory = inventory,
+		groups = {
+			ambulance = 0
+		},
+	})
+end
+
 RegisterNetEvent('esx_ambulancejob:revive')
 AddEventHandler('esx_ambulancejob:revive', function(playerId)
 	playerId = tonumber(playerId)

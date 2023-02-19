@@ -451,6 +451,9 @@ function OpenCloakroomMenu()
 end
 
 function OpenPharmacyMenu()
+	if Config.OxInventory then
+		return exports.ox_inventory:openInventory('shop', {type = 'pharmacy'})
+	end
 	local elements = {
 		{ unselectable = true, icon = "fas fa-pills", title = TranslateCap('pharmacy_menu_title') }
 	}

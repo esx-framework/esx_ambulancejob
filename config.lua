@@ -38,11 +38,13 @@ Config.RespawnPoints = {
 Config.PharmacyItems = {
 	{
 		title = "Medikit",
-		item = "medikit"
+		item = "medikit",
+		price = 500
 	},
 	{
 		title = "Bandage",
-		item = "bandage"
+		item = "bandage",
+		price = 100
 	},
 }
 
