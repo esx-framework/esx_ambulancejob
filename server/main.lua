@@ -16,15 +16,18 @@ AddEventHandler('esx_ambulancejob:revive', function(playerId)
 
 	if xPlayer and xPlayer.job.name == 'ambulance' then
 		local xTarget = ESX.GetPlayerFromId(playerId)
+		local plyState = Player(xTarget.source).state
 		if xTarget then
 			if deadPlayers[playerId] then
 				if Config.ReviveReward > 0 then
 					xPlayer.showNotification(TranslateCap('revive_complete_award', xTarget.name, Config.ReviveReward))
 					xPlayer.addMoney(Config.ReviveReward, "Revive Reward")
 					xTarget.triggerEvent('esx_ambulancejob:revive')
+					plyState.isDead = false
 				else
 					xPlayer.showNotification(TranslateCap('revive_complete', xTarget.name))
 					xTarget.triggerEvent('esx_ambulancejob:revive')
+					plyState.isDead = false
 				end
 				local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
@@ -65,6 +68,8 @@ AddEventHandler('esx:onPlayerDeath', function(data)
 	local source = source
 	deadPlayers[source] = 'dead'
 	local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
+	local plyState = Player(source).state
+	plyState.isDead = true
 
 	for _, xPlayer in pairs(Ambulance) do
 		xPlayer.triggerEvent('esx_ambulancejob:PlayerDead', source)
@@ -97,6 +102,8 @@ AddEventHandler('esx:onPlayerSpawn', function()
 	local source = source
 	if deadPlayers[source] then
 		deadPlayers[source] = nil
+		local plyState = Player(source).state
+		plyState.isDead = false
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
 		for _, xPlayer in pairs(Ambulance) do
@@ -108,6 +115,8 @@ end)
 AddEventHandler('esx:playerDropped', function(playerId, reason)
 	if deadPlayers[playerId] then
 		deadPlayers[playerId] = nil
+		local plyState = Player(playerId).state
+		plyState.isDead = false
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
 		for _, xPlayer in pairs(Ambulance) do
@@ -356,7 +365,9 @@ AddEventHandler('esx_ambulancejob:setDeathStatus', function(isDead)
 
 	if type(isDead) == 'boolean' then
 		MySQL.update('UPDATE users SET is_dead = ? WHERE identifier = ?', { isDead, xPlayer.identifier })
-
+		local playerState = Player(source).state
+		playerState.isDead = isDead
+			
 		if not isDead then
 			local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 			for _, xPlayer in pairs(Ambulance) do
