@@ -60,6 +60,7 @@ Locales['nl'] = {
   ['ems_menu_putincar'] = 'Zet in voertuig',
   ['ems_menu_small'] = 'Behandel kleine verwondingen',
   ['ems_menu_big'] = 'Behandel grote verwondingen',
+  ['ems_menu_search'] = 'Patiënt niet gevonden',
   -- Phone
   ['alert_ambulance'] = 'alert Ambulance',
   -- Death
