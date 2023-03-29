@@ -1,4 +1,4 @@
-Locales['zh-CN'] = {
+Locales['zh-cn'] = {
   -- Cloakroom
   ['cloakroom'] = '更衣室',
   ['ems_clothes_civil'] = '换回便服',
