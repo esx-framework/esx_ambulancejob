@@ -307,7 +307,10 @@ end, true, { help = TranslateCap('revive_help'), validate = true, arguments = {
 } })
 
 ESX.RegisterCommand('reviveall', "admin", function(xPlayer, args, showError)
-	TriggerClientEvent('esx_ambulancejob:revive', -1)
+	for index, _ in pairs(deadPlayers) do 
+		TriggerClientEvent('esx_ambulancejob:revive', index) 
+		deadPlayers[index] = nil 
+    end
 end, false)
 
 ESX.RegisterUsableItem('medikit', function(source)
