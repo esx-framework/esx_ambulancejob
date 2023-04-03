@@ -82,5 +82,5 @@ Locales['sr'] = {
   ['healed'] = 'Vas leče.',
   -- Blips
   ['blip_hospital'] = 'Bolnica',
-  ['blip_dead'] = 'Povređena Osoba',
+  ['blip_dead'] = 'Povredjena Osoba',
 }
