@@ -56,8 +56,8 @@ Locales['de'] = {
   -- F6 Menu
   ['ems_menu'] = 'Rettungsdienst Menü',
   ['ems_menu_title'] = 'Rettungsdienst - Menü',
-  ['ems_menu_revive'] = 'Person wiederbeleben
-  ['ems_menu_putincar'] = 'In das Fahrzeug setzen
+  ['ems_menu_revive'] = 'Person wiederbeleben',
+  ['ems_menu_putincar'] = 'In das Fahrzeug setzen',
   ['ems_menu_small'] = 'Kleine Wunden heilen',
   ['ems_menu_big'] = 'Starke Verletzungen behandeln',
   ['ems_menu_search'] = 'Patient nicht gefunden!',
