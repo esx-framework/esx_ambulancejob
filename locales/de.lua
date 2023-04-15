@@ -55,7 +55,7 @@ Locales['de'] = {
   ['max_item'] = 'Du trägst bereits genug.',
   -- F6 Menu
   ['ems_menu'] = 'Rettungsdienst Menü',
-  ['ems_menu_title'] = 'Rettungsdienst - Menü,
+  ['ems_menu_title'] = 'Rettungsdienst - Menü',
   ['ems_menu_revive'] = 'Person wiederbeleben
   ['ems_menu_putincar'] = 'In das Fahrzeug setzen
   ['ems_menu_small'] = 'Kleine Wunden heilen',
