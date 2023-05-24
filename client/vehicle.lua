@@ -208,7 +208,7 @@ function OpenShopMenu(elements, restoreCoords, shopCoords)
 				DeleteSpawnedVehicles()
 				WaitForVehicleToLoad(element.model)
 
-				ESX.Game.SpawnLocalVehicle(element.model, shopCoords, 0.0, function(vehicle)
+				ESX.Game.SpawnLocalVehicle(element.model, shopCoords.xyz, shopCoords.w, function(vehicle)
 					table.insert(spawnedVehicles, vehicle)
 					TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
 					FreezeEntityPosition(vehicle, true)
