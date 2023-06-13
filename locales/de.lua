@@ -4,7 +4,7 @@ Locales['de'] = {
   ['ems_clothes_civil'] = 'Zivilklamotten',
   ['ems_clothes_ems'] = 'Rettungsdienst Uniform',
   -- Vehicles
-  ['ambulance'] = 'Rettungswagen',
+  ['ambulance'] = 'Rettungsdienst',
   ['helicopter_prompt'] = 'Drücke [E] um auf die Helikopter Aktionen zuzugreifen.',
   ['garage_prompt'] = 'Drücke [E] um auf die Fahrzeug Aktionen zuzugreifen.',
   ['garage_title'] = 'Fahrzeug Aktionen',
