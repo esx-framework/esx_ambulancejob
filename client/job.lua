@@ -12,7 +12,7 @@ end)
 
 function OpenAmbulanceActionsMenu()
 	local elements = {
-		{ unselectable = true, icon = "fas fa-shirt", title = "Ambulance Actions" },
+		{ unselectable = true, icon = "fas fa-shirt", title = TranslateCap('ambulance') },
 		{ icon = "fas fa-shirt", title = TranslateCap('cloakroom'), value = 'cloakroom' }
 	}
 
