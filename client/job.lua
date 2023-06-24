@@ -408,15 +408,37 @@ AddEventHandler('esx_ambulancejob:putInVehicle', function()
 end)
 
 function OpenCloakroomMenu()
+	local playerPed = PlayerPedId()
+	local grade = ESX.PlayerData.job.grade
+	
 	local elements = {
 		{ unselectable = true, icon = "fas fa-shirt", title = TranslateCap('cloakroom') },
 		{ icon = "fas fa-shirt", title = TranslateCap('ems_clothes_civil'), value = "citizen_wear" },
-		{ icon = "fas fa-shirt", title = TranslateCap('ems_clothes_ems'), value = "ambulance_wear" },
 	}
 
+	for label, uniform in pairs(Config.Clothing) do
+		if uniform.shared then
+			elements[#elements + 1] = {
+				icon = uniform.shared.icon,
+				title = label,
+				uniform = uniform.shared.clothing,
+				armor = uniform.shared.armor or 0
+			}
+		elseif uniform[grade] ~= nil then
+			elements[#elements + 1] = {
+				icon = uniform[grade].icon,
+				title = label,
+				uniform = uniform[grade].clothing,
+				armor = uniform[grade].armor or 0
+			}
+		end
+	end
+ 
 	ESX.OpenContext("right", elements, function(menu, element)
-		if element.value == "citizen_wear" then
+		if element.value == 'citizen_wear' then
 			ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin, jobSkin)
+				SetPedArmour(playerPed, 0)
+
 				TriggerEvent('skinchanger:loadSkin', skin)
 				isOnDuty = false
 
@@ -429,13 +451,15 @@ function OpenCloakroomMenu()
 					print("[^2INFO^7] Off Duty")
 				end
 			end)
-		elseif element.value == "ambulance_wear" then
+		elseif element.uniform then
 			ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin, jobSkin)
 				if skin.sex == 0 then
-					TriggerEvent('skinchanger:loadClothes', skin, jobSkin.skin_male)
+					TriggerEvent('skinchanger:loadClothes', skin, element.uniform.male)
 				else
-					TriggerEvent('skinchanger:loadClothes', skin, jobSkin.skin_female)
+					TriggerEvent('skinchanger:loadClothes', skin, element.uniform.female)
 				end
+
+				SetPedArmour(playerPed, element.armor)
 
 				isOnDuty = true
 				ESX.TriggerServerCallback('esx_ambulancejob:getDeadPlayers', function(_deadPlayers)
