@@ -418,19 +418,9 @@ function OpenCloakroomMenu()
 
 	for label, uniform in pairs(Config.Clothing) do
 		if uniform.shared then
-			elements[#elements + 1] = {
-				icon = uniform.shared.icon,
-				title = label,
-				uniform = uniform.shared.clothing,
-				armor = uniform.shared.armor or 0
-			}
+			elements[#elements + 1] = { icon = uniform.shared.icon, title = label, uniform = uniform.shared.clothing, armor = uniform.shared.armor or 0 }
 		elseif uniform[grade] ~= nil then
-			elements[#elements + 1] = {
-				icon = uniform[grade].icon,
-				title = label,
-				uniform = uniform[grade].clothing,
-				armor = uniform[grade].armor or 0
-			}
+			elements[#elements + 1] = { icon = uniform[grade].icon, title = label, uniform = uniform[grade].clothing, armor = uniform[grade].armor or 0 }
 		end
 	end
  
@@ -453,12 +443,7 @@ function OpenCloakroomMenu()
 			end)
 		elseif element.uniform then
 			ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin, jobSkin)
-				if skin.sex == 0 then
-					TriggerEvent('skinchanger:loadClothes', skin, element.uniform.male)
-				else
-					TriggerEvent('skinchanger:loadClothes', skin, element.uniform.female)
-				end
-
+				TriggerEvent('skinchanger:loadClothes', skin, skin.sex == 0 and element.uniform.male or element.uniform.female)
 				SetPedArmour(playerPed, element.armor)
 
 				isOnDuty = true
