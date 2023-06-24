@@ -184,3 +184,132 @@ Config.AuthorizedVehicles = {
 		}
 	}
 }
+
+Config.Clothing = {
+	['EMS Station Clothing'] = { -- label for the menu option
+		shared = { -- job grade number
+			icon = 'fas fa-pills', -- icon in the menu
+			armor = 100, -- optional: armor if deleted it will automaticly set to 0
+			clothing = { -- clothing self explanatory 
+				male = {
+					tshirt_1 = 15,  tshirt_2 = 0,
+					torso_1 = 463,   torso_2 = 1,
+					arms = 0,
+					pants_1 = 52,   pants_2 = 0,
+					shoes_1 = 25,   shoes_2 = 0,
+					bproof_1 = 8,  bproof_2 = 0,
+				},
+				female = {
+					tshirt_1 = 36,  tshirt_2 = 0,
+					torso_1 = 48,   torso_2 = 0,
+					decals_1 = 0,   decals_2 = 0,
+					arms = 44,
+					pants_1 = 34,   pants_2 = 0,
+					shoes_1 = 27,   shoes_2 = 0,
+					helmet_1 = 45,  helmet_2 = 0,
+					chain_1 = 0,    chain_2 = 0,
+					ears_1 = 2,     ears_2 = 0
+				}
+			}
+		},
+	},
+	['EMS Clothing'] = {
+		[0] = {
+			icon = 'fas fa-pills',
+			clothing = {
+				male = {
+					tshirt_1 = 15,  tshirt_2 = 0,
+					torso_1 = 463,   torso_2 = 1,
+					arms = 0,
+					pants_1 = 52,   pants_2 = 0,
+					shoes_1 = 25,   shoes_2 = 0,
+					bproof_1 = 8,  bproof_2 = 0,
+				},
+				female = {
+					tshirt_1 = 36,  tshirt_2 = 0,
+					torso_1 = 48,   torso_2 = 0,
+					decals_1 = 0,   decals_2 = 0,
+					arms = 44,
+					pants_1 = 34,   pants_2 = 0,
+					shoes_1 = 27,   shoes_2 = 0,
+					helmet_1 = 45,  helmet_2 = 0,
+					chain_1 = 0,    chain_2 = 0,
+					ears_1 = 2,     ears_2 = 0
+				}
+			}
+		},
+		[1] = {
+			icon = 'fas fa-pills',
+			clothing = {
+				male = {
+					tshirt_1 = 15,  tshirt_2 = 0,
+					torso_1 = 463,   torso_2 = 2,
+					arms = 0,
+					pants_1 = 52,   pants_2 = 0,
+					shoes_1 = 25,   shoes_2 = 0,
+					bproof_1 = 8,  bproof_2 = 0,
+				},
+				female = {
+					tshirt_1 = 35,  tshirt_2 = 0,
+					torso_1 = 48,   torso_2 = 0,
+					decals_1 = 0,   decals_2 = 0,
+					arms = 44,
+					pants_1 = 34,   pants_2 = 0,
+					shoes_1 = 27,   shoes_2 = 0,
+					helmet_1 = -1,  helmet_2 = 0,
+					chain_1 = 0,    chain_2 = 0,
+					ears_1 = 2,     ears_2 = 0
+				}
+			}
+		},
+		[2] = {
+			icon = 'fas fa-pills',
+			clothing = {
+				male = {
+					tshirt_1 = 15,  tshirt_2 = 0,
+					torso_1 = 463,   torso_2 = 13,
+					arms = 0,
+					pants_1 = 52,   pants_2 = 0,
+					shoes_1 = 25,   shoes_2 = 0,
+					bproof_1 = 8,  bproof_2 = 0,
+				},
+				female = {
+					tshirt_1 = 35,  tshirt_2 = 0,
+					torso_1 = 48,   torso_2 = 0,
+					decals_1 = 7,   decals_2 = 1,
+					arms = 44,
+					pants_1 = 34,   pants_2 = 0,
+					shoes_1 = 27,   shoes_2 = 0,
+					helmet_1 = -1,  helmet_2 = 0,
+					chain_1 = 0,    chain_2 = 0,
+					ears_1 = 2,     ears_2 = 0
+				}
+			}
+		},
+		[3] = {
+			icon = 'fas fa-pills',
+			clothing = {
+				male = {
+					tshirt_1 = 15,  tshirt_2 = 0,
+					torso_1 = 456,   torso_2 = 3,
+					arms = 11,
+					pants_1 = 52,   pants_2 = 1,
+					shoes_1 = 25,   shoes_2 = 0,
+					bproof_1 = 8,  bproof_2 = 0,
+					bags_1 = 114,  bags_2 = 0,
+				},
+				female = {
+					tshirt_1 = 35,  tshirt_2 = 0,
+					torso_1 = 48,   torso_2 = 0,
+					decals_1 = 7,   decals_2 = 2,
+					arms = 44,
+					pants_1 = 34,   pants_2 = 0,
+					shoes_1 = 27,   shoes_2 = 0,
+					helmet_1 = -1,  helmet_2 = 0,
+					chain_1 = 0,    chain_2 = 0,
+					ears_1 = 2,     ears_2 = 0
+				}
+			}
+		},
+	},
+}
