@@ -29,9 +29,7 @@ AddEventHandler('esx_ambulancejob:revive', function(playerId)
 				local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
 				for _, xPlayer in pairs(Ambulance) do
-					if xPlayer.job.name == 'ambulance' then
-						xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
-					end
+					xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
 				end
 				deadPlayers[playerId] = nil
 			else
@@ -52,9 +50,7 @@ AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
 		for _, xPlayer in pairs(Ambulance) do
-			if xPlayer.job.name == 'ambulance' then
-				xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', eventData.id)
-			end
+			xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', eventData.id)
 		end
 		deadPlayers[eventData.id] = nil
 	end
@@ -111,9 +107,7 @@ AddEventHandler('esx:playerDropped', function(playerId, reason)
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
 		for _, xPlayer in pairs(Ambulance) do
-			if xPlayer.job.name == 'ambulance' then
-				xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
-			end
+			xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
 		end
 	end
 end)
