@@ -46,7 +46,7 @@ AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
 		TriggerClientEvent('esx_ambulancejob:revive', eventData.id)
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
-		for _, xPlayer in pairs(Ambulance) do
+		for _, xPlayer in ipairs(Ambulance) do
 			xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', eventData.id)
 		end
 		deadPlayers[eventData.id] = nil
@@ -59,7 +59,7 @@ AddEventHandler('esx:onPlayerDeath', function(data)
 	deadPlayers[source] = 'dead'
 	local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
-	for _, xPlayer in pairs(Ambulance) do
+	for _, xPlayer in ipairs(Ambulance) do
 		xPlayer.triggerEvent('esx_ambulancejob:PlayerDead', source)
 	end
 end)
@@ -79,7 +79,7 @@ AddEventHandler('esx_ambulancejob:onPlayerDistress', function()
 		deadPlayers[source] = 'distress'
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
-		for _, xPlayer in pairs(Ambulance) do
+		for _, xPlayer in ipairs(Ambulance) do
 			xPlayer.triggerEvent('esx_ambulancejob:PlayerDistressed', source, injuredCoords)
 		end
 	end
@@ -92,7 +92,7 @@ AddEventHandler('esx:onPlayerSpawn', function()
 		deadPlayers[source] = nil
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
-		for _, xPlayer in pairs(Ambulance) do
+		for _, xPlayer in ipairs(Ambulance) do
 			xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', source)
 		end
 	end
@@ -103,7 +103,7 @@ AddEventHandler('esx:playerDropped', function(playerId, reason)
 		deadPlayers[playerId] = nil
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
-		for _, xPlayer in pairs(Ambulance) do
+		for _, xPlayer in ipairs(Ambulance) do
 			xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
 		end
 	end
@@ -350,7 +350,7 @@ AddEventHandler('esx_ambulancejob:setDeathStatus', function(isDead)
 
 		if not isDead then
 			local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
-			for _, xPlayer in pairs(Ambulance) do
+			for _, xPlayer in ipairs(Ambulance) do
 				xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', source)
 			end
 		end
