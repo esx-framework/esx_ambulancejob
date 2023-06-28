@@ -146,7 +146,6 @@ function revivePlayer(closestPlayer)
 					end)
 				end
 
-				TriggerServerEvent('esx_ambulancejob:removeItem', 'medikit')
 				TriggerServerEvent('esx_ambulancejob:revive', GetPlayerServerId(closestPlayer))
 			else
 				ESX.ShowNotification(TranslateCap('player_not_unconscious'))

@@ -12,14 +12,17 @@ end
 RegisterNetEvent('esx_ambulancejob:revive')
 AddEventHandler('esx_ambulancejob:revive', function(playerId)
 	playerId = tonumber(playerId)
+	if not deadPlayers[playerId] then return xPlayer.showNotification(TranslateCap('player_not_unconscious')) end
+	if source == playerId then return xPlayer.showNotification(TranslateCap('revive_myself')) end
 
 	local xPlayer = source and ESX.GetPlayerFromId(source)
 	if not xPlayer and xPlayer.job.name ~= 'ambulance' then return end
 
+	local quantity = xPlayer.getInventoryItem("medikit").count
+	if quantity <= 0 then return xPlayer.showNotification(TranslateCap('not_enough_medikit')) end
+
 	local xTarget = ESX.GetPlayerFromId(playerId)
 	if not xTarget then return xPlayer.showNotification(TranslateCap('revive_fail_offline')) end
-	if not deadPlayers[playerId] then return xPlayer.showNotification(TranslateCap('player_not_unconscious')) end
-	if source == playerId then return xPlayer.showNotification(TranslateCap('revive_myself')) end
 
 	if Config.ReviveReward > 0 then
 		xPlayer.showNotification(TranslateCap('revive_complete_award', xTarget.name, Config.ReviveReward))
@@ -29,6 +32,9 @@ AddEventHandler('esx_ambulancejob:revive', function(playerId)
 	end
 
 	xTarget.triggerEvent('esx_ambulancejob:revive')
+	
+	xPlayer.showNotification(TranslateCap('used_medikit'))
+	xPlayer.removeInventoryItem("medikit", 1)
 
 	local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 	for _, xPlayer in ipairs(Ambulance) do
