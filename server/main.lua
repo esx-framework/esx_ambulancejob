@@ -12,33 +12,30 @@ end
 RegisterNetEvent('esx_ambulancejob:revive')
 AddEventHandler('esx_ambulancejob:revive', function(playerId)
 	playerId = tonumber(playerId)
+
 	local xPlayer = source and ESX.GetPlayerFromId(source)
+	if not xPlayer and xPlayer.job.name ~= 'ambulance' then return end
 
-	if xPlayer and xPlayer.job.name == 'ambulance' then
-		local xTarget = ESX.GetPlayerFromId(playerId)
-		if xTarget then
-			if deadPlayers[playerId] then
-				if Config.ReviveReward > 0 then
-					xPlayer.showNotification(TranslateCap('revive_complete_award', xTarget.name, Config.ReviveReward))
-					xPlayer.addMoney(Config.ReviveReward, "Revive Reward")
-					xTarget.triggerEvent('esx_ambulancejob:revive')
-				else
-					xPlayer.showNotification(TranslateCap('revive_complete', xTarget.name))
-					xTarget.triggerEvent('esx_ambulancejob:revive')
-				end
-				local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
+	local xTarget = ESX.GetPlayerFromId(playerId)
+	if not xTarget then return xPlayer.showNotification(TranslateCap('revive_fail_offline')) end
+	if not deadPlayers[playerId] then return xPlayer.showNotification(TranslateCap('player_not_unconscious')) end
+	if source == playerId then return xPlayer.showNotification(TranslateCap('revive_myself')) end
 
-				for _, xPlayer in pairs(Ambulance) do
-					xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
-				end
-				deadPlayers[playerId] = nil
-			else
-				xPlayer.showNotification(TranslateCap('player_not_unconscious'))
-			end
-		else
-			xPlayer.showNotification(TranslateCap('revive_fail_offline'))
-		end
+	if Config.ReviveReward > 0 then
+		xPlayer.showNotification(TranslateCap('revive_complete_award', xTarget.name, Config.ReviveReward))
+		xPlayer.addMoney(Config.ReviveReward, "Revive Reward")
+	else
+		xPlayer.showNotification(TranslateCap('revive_complete', xTarget.name))
 	end
+
+	xTarget.triggerEvent('esx_ambulancejob:revive')
+
+	local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
+	for _, xPlayer in ipairs(Ambulance) do
+		xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
+	end
+
+	deadPlayers[playerId] = nil
 end)
 
 AddEventHandler('txAdmin:events:healedPlayer', function(eventData)

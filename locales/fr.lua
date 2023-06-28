@@ -53,6 +53,7 @@ Locales['fr'] = {
   ['medikit'] = 'kit de soin',
   ['bandage'] = 'bandage',
   ['max_item'] = 'vous en portez déjà assez sur vous.',
+  ['revive_myself'] = 'vous ne pouvez pas vous réanimer vous-même',
   -- F6 Menu
   ['ems_menu'] = 'interaction citoyen',
   ['ems_menu_title'] = 'ambulance - Interactions Citoyen',
