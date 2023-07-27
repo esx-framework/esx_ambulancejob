@@ -24,6 +24,10 @@ AddEventHandler('esx_ambulancejob:revive', function(playerId)
 	local xTarget = ESX.GetPlayerFromId(playerId)
 	if not xTarget then return xPlayer.showNotification(TranslateCap('revive_fail_offline')) end
 
+	local coords, targetCoords = xPlayer.getCoords(true), xTarget.getCoords(true)
+	local distance = #(coords - targetCoords)
+	if distance > 10.0 then return end
+
 	if Config.ReviveReward > 0 then
 		xPlayer.showNotification(TranslateCap('revive_complete_award', xTarget.name, Config.ReviveReward))
 		xPlayer.addMoney(Config.ReviveReward, "Revive Reward")
@@ -63,8 +67,8 @@ RegisterNetEvent('esx:onPlayerDeath')
 AddEventHandler('esx:onPlayerDeath', function(data)
 	local source = source
 	deadPlayers[source] = 'dead'
+	
 	local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
-
 	for _, xPlayer in ipairs(Ambulance) do
 		xPlayer.triggerEvent('esx_ambulancejob:PlayerDead', source)
 	end
@@ -119,9 +123,16 @@ RegisterNetEvent('esx_ambulancejob:heal')
 AddEventHandler('esx_ambulancejob:heal', function(target, type)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer.job.name == 'ambulance' then
+		local xTarget = ESX.GetPlayerFromId(target)
+		if not xTarget then return end
+
+		local coords, targetCoords = xPlayer.getCoords(true), xTarget.getCoords(true)
+		local distance = #(coords - targetCoords)
+		if distance > 10.0 then return end
+
 		if xPlayer.getInventoryItem(type).count < 0 then return end
-		
 		xPlayer.removeInventoryItem(type, 1)
+
 		if type == 'bandage' then
 			xPlayer.showNotification(TranslateCap('used_bandage'))
 		elseif type == 'medikit' then
@@ -135,8 +146,14 @@ end)
 RegisterNetEvent('esx_ambulancejob:putInVehicle')
 AddEventHandler('esx_ambulancejob:putInVehicle', function(target)
 	local xPlayer = ESX.GetPlayerFromId(source)
-
 	if xPlayer.job.name == 'ambulance' then
+		local xTarget = ESX.GetPlayerFromId(target)
+		if not xTarget then return end
+
+		local coords, targetCoords = xPlayer.getCoords(true), xTarget.getCoords(true)
+		local distance = #(coords - targetCoords)
+		if distance > 10.0 then return end
+		
 		TriggerClientEvent('esx_ambulancejob:putInVehicle', target)
 	end
 end)
