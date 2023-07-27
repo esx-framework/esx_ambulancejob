@@ -12,35 +12,40 @@ end
 RegisterNetEvent('esx_ambulancejob:revive')
 AddEventHandler('esx_ambulancejob:revive', function(playerId)
 	playerId = tonumber(playerId)
+	if not deadPlayers[playerId] then return xPlayer.showNotification(TranslateCap('player_not_unconscious')) end
+	if source == playerId then return xPlayer.showNotification(TranslateCap('revive_myself')) end
+
 	local xPlayer = source and ESX.GetPlayerFromId(source)
+	if not xPlayer and xPlayer.job.name ~= 'ambulance' then return end
 
-	if xPlayer and xPlayer.job.name == 'ambulance' then
-		local xTarget = ESX.GetPlayerFromId(playerId)
-		if xTarget then
-			if deadPlayers[playerId] then
-				if Config.ReviveReward > 0 then
-					xPlayer.showNotification(TranslateCap('revive_complete_award', xTarget.name, Config.ReviveReward))
-					xPlayer.addMoney(Config.ReviveReward, "Revive Reward")
-					xTarget.triggerEvent('esx_ambulancejob:revive')
-				else
-					xPlayer.showNotification(TranslateCap('revive_complete', xTarget.name))
-					xTarget.triggerEvent('esx_ambulancejob:revive')
-				end
-				local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
+	local quantity = xPlayer.getInventoryItem("medikit").count
+	if quantity <= 0 then return xPlayer.showNotification(TranslateCap('not_enough_medikit')) end
 
-				for _, xPlayer in pairs(Ambulance) do
-					if xPlayer.job.name == 'ambulance' then
-						xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
-					end
-				end
-				deadPlayers[playerId] = nil
-			else
-				xPlayer.showNotification(TranslateCap('player_not_unconscious'))
-			end
-		else
-			xPlayer.showNotification(TranslateCap('revive_fail_offline'))
-		end
+	local xTarget = ESX.GetPlayerFromId(playerId)
+	if not xTarget then return xPlayer.showNotification(TranslateCap('revive_fail_offline')) end
+
+	local coords, targetCoords = xPlayer.getCoords(true), xTarget.getCoords(true)
+	local distance = #(coords - targetCoords)
+	if distance > 10.0 then return end
+
+	if Config.ReviveReward > 0 then
+		xPlayer.showNotification(TranslateCap('revive_complete_award', xTarget.name, Config.ReviveReward))
+		xPlayer.addMoney(Config.ReviveReward, "Revive Reward")
+	else
+		xPlayer.showNotification(TranslateCap('revive_complete', xTarget.name))
 	end
+
+	xTarget.triggerEvent('esx_ambulancejob:revive')
+	
+	xPlayer.showNotification(TranslateCap('used_medikit'))
+	xPlayer.removeInventoryItem("medikit", 1)
+
+	local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
+	for _, xPlayer in ipairs(Ambulance) do
+		xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
+	end
+
+	deadPlayers[playerId] = nil
 end)
 
 AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
@@ -51,10 +56,8 @@ AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
 		TriggerClientEvent('esx_ambulancejob:revive', eventData.id)
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
-		for _, xPlayer in pairs(Ambulance) do
-			if xPlayer.job.name == 'ambulance' then
-				xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', eventData.id)
-			end
+		for _, xPlayer in ipairs(Ambulance) do
+			xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', eventData.id)
 		end
 		deadPlayers[eventData.id] = nil
 	end
@@ -64,9 +67,9 @@ RegisterNetEvent('esx:onPlayerDeath')
 AddEventHandler('esx:onPlayerDeath', function(data)
 	local source = source
 	deadPlayers[source] = 'dead'
+	
 	local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
-
-	for _, xPlayer in pairs(Ambulance) do
+	for _, xPlayer in ipairs(Ambulance) do
 		xPlayer.triggerEvent('esx_ambulancejob:PlayerDead', source)
 	end
 end)
@@ -86,7 +89,7 @@ AddEventHandler('esx_ambulancejob:onPlayerDistress', function()
 		deadPlayers[source] = 'distress'
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
-		for _, xPlayer in pairs(Ambulance) do
+		for _, xPlayer in ipairs(Ambulance) do
 			xPlayer.triggerEvent('esx_ambulancejob:PlayerDistressed', source, injuredCoords)
 		end
 	end
@@ -99,7 +102,7 @@ AddEventHandler('esx:onPlayerSpawn', function()
 		deadPlayers[source] = nil
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
-		for _, xPlayer in pairs(Ambulance) do
+		for _, xPlayer in ipairs(Ambulance) do
 			xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', source)
 		end
 	end
@@ -110,10 +113,8 @@ AddEventHandler('esx:playerDropped', function(playerId, reason)
 		deadPlayers[playerId] = nil
 		local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
 
-		for _, xPlayer in pairs(Ambulance) do
-			if xPlayer.job.name == 'ambulance' then
-				xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
-			end
+		for _, xPlayer in ipairs(Ambulance) do
+			xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', playerId)
 		end
 	end
 end)
@@ -121,8 +122,23 @@ end)
 RegisterNetEvent('esx_ambulancejob:heal')
 AddEventHandler('esx_ambulancejob:heal', function(target, type)
 	local xPlayer = ESX.GetPlayerFromId(source)
-
 	if xPlayer.job.name == 'ambulance' then
+		local xTarget = ESX.GetPlayerFromId(target)
+		if not xTarget then return end
+
+		local coords, targetCoords = xPlayer.getCoords(true), xTarget.getCoords(true)
+		local distance = #(coords - targetCoords)
+		if distance > 10.0 then return end
+
+		if xPlayer.getInventoryItem(type).count < 0 then return end
+		xPlayer.removeInventoryItem(type, 1)
+
+		if type == 'bandage' then
+			xPlayer.showNotification(TranslateCap('used_bandage'))
+		elseif type == 'medikit' then
+			xPlayer.showNotification(TranslateCap('used_medikit'))
+		end
+
 		TriggerClientEvent('esx_ambulancejob:heal', target, type)
 	end
 end)
@@ -130,8 +146,14 @@ end)
 RegisterNetEvent('esx_ambulancejob:putInVehicle')
 AddEventHandler('esx_ambulancejob:putInVehicle', function(target)
 	local xPlayer = ESX.GetPlayerFromId(source)
-
 	if xPlayer.job.name == 'ambulance' then
+		local xTarget = ESX.GetPlayerFromId(target)
+		if not xTarget then return end
+
+		local coords, targetCoords = xPlayer.getCoords(true), xTarget.getCoords(true)
+		local distance = #(coords - targetCoords)
+		if distance > 10.0 then return end
+		
 		TriggerClientEvent('esx_ambulancejob:putInVehicle', target)
 	end
 end)
@@ -269,18 +291,6 @@ function getPriceFromHash(vehicleHash, jobGrade, type)
 	return 0
 end
 
-RegisterNetEvent('esx_ambulancejob:removeItem')
-AddEventHandler('esx_ambulancejob:removeItem', function(item)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	xPlayer.removeInventoryItem(item, 1)
-
-	if item == 'bandage' then
-		xPlayer.showNotification(TranslateCap('used_bandage'))
-	elseif item == 'medikit' then
-		xPlayer.showNotification(TranslateCap('used_medikit'))
-	end
-end)
-
 RegisterNetEvent('esx_ambulancejob:giveItem')
 AddEventHandler('esx_ambulancejob:giveItem', function(itemName, amount)
 	local xPlayer = ESX.GetPlayerFromId(source)
@@ -359,7 +369,7 @@ AddEventHandler('esx_ambulancejob:setDeathStatus', function(isDead)
 
 		if not isDead then
 			local Ambulance = ESX.GetExtendedPlayers("job", "ambulance")
-			for _, xPlayer in pairs(Ambulance) do
+			for _, xPlayer in ipairs(Ambulance) do
 				xPlayer.triggerEvent('esx_ambulancejob:PlayerNotDead', source)
 			end
 		end
