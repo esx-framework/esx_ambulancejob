@@ -118,8 +118,16 @@ end)
 RegisterNetEvent('esx_ambulancejob:heal')
 AddEventHandler('esx_ambulancejob:heal', function(target, type)
 	local xPlayer = ESX.GetPlayerFromId(source)
-
 	if xPlayer.job.name == 'ambulance' then
+		if xPlayer.getInventoryItem(type).count < 0 then return end
+		
+		xPlayer.removeInventoryItem(type, 1)
+		if type == 'bandage' then
+			xPlayer.showNotification(TranslateCap('used_bandage'))
+		elseif type == 'medikit' then
+			xPlayer.showNotification(TranslateCap('used_medikit'))
+		end
+
 		TriggerClientEvent('esx_ambulancejob:heal', target, type)
 	end
 end)
@@ -265,18 +273,6 @@ function getPriceFromHash(vehicleHash, jobGrade, type)
 
 	return 0
 end
-
-RegisterNetEvent('esx_ambulancejob:removeItem')
-AddEventHandler('esx_ambulancejob:removeItem', function(item)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	xPlayer.removeInventoryItem(item, 1)
-
-	if item == 'bandage' then
-		xPlayer.showNotification(TranslateCap('used_bandage'))
-	elseif item == 'medikit' then
-		xPlayer.showNotification(TranslateCap('used_medikit'))
-	end
-end)
 
 RegisterNetEvent('esx_ambulancejob:giveItem')
 AddEventHandler('esx_ambulancejob:giveItem', function(itemName, amount)

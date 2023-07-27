@@ -78,7 +78,6 @@ function OpenMobileAmbulanceActionsMenu()
 									Wait(10000)
 									ClearPedTasks(playerPed)
 
-									TriggerServerEvent('esx_ambulancejob:removeItem', 'bandage')
 									TriggerServerEvent('esx_ambulancejob:heal', GetPlayerServerId(closestPlayer), 'small')
 									ESX.ShowNotification(TranslateCap('heal_complete', GetPlayerName(closestPlayer)))
 									isBusy = false
@@ -105,7 +104,6 @@ function OpenMobileAmbulanceActionsMenu()
 									Wait(10000)
 									ClearPedTasks(playerPed)
 
-									TriggerServerEvent('esx_ambulancejob:removeItem', 'medikit')
 									TriggerServerEvent('esx_ambulancejob:heal', GetPlayerServerId(closestPlayer), 'big')
 									ESX.ShowNotification(TranslateCap('heal_complete', GetPlayerName(closestPlayer)))
 									isBusy = false
