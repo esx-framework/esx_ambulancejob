@@ -356,9 +356,8 @@ end)
 
 ESX.RegisterServerCallback('esx_ambulancejob:getDeathStatus', function(source, cb)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	MySQL.scalar('SELECT is_dead FROM users WHERE identifier = ?', { xPlayer.identifier }, function(isDead)
-		cb(isDead)
-	end)
+	local isDead = xPlayer.getMeta("isDead") == 1
+	cb(isDead)
 end)
 
 RegisterNetEvent('esx_ambulancejob:setDeathStatus')
@@ -366,7 +365,7 @@ AddEventHandler('esx_ambulancejob:setDeathStatus', function(isDead)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	if type(isDead) == 'boolean' then
-		MySQL.update('UPDATE users SET is_dead = ? WHERE identifier = ?', { isDead, xPlayer.identifier })
+		xPlayer.setMeta('isDead', isDead and 1 or 0)
 		isDeadState(source, isDead)
 			
 		if not isDead then

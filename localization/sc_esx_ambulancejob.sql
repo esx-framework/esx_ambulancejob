@@ -27,7 +27,3 @@ INSERT INTO `items` (name, label, weight) VALUES
 	('bandage','医用绷带', 2),
 	('medikit','紧急治疗包', 2)
 ;
-
-ALTER TABLE `users`
-	ADD `is_dead` TINYINT(1) NULL DEFAULT '0'
-;
