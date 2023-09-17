@@ -299,19 +299,18 @@ function StartDeathTimer()
 end
 
 function GetClosestRespawnPoint()
-  local PlyCoords = GetEntityCoords(PlayerPedId())
-  local ClosestDist, ClosestHospital, ClosestCoord = 10000, {}, nil
+  local plyCoords = GetEntityCoords(PlayerPedId())
+  local closestDist, closestHospital 
 
-  for k, v in pairs(Config.RespawnPoints) do
-    local Distance = #(PlyCoords - vector3(v.coords.x, v.coords.y, v.coords.z))
-    if Distance <= ClosestDist then
-      ClosestDist = Distance
-      ClosestHospital = v
-      ClosestCoord = vector3(v.coords.x, v.coords.y, v.coords.z)
-    end
-  end
+  for i=1, #Config.RespawnPoints do 
+      local dist = #(plyCoords - Config.RespawnPoints[i].coords) 
 
-  return ClosestCoord, ClosestHospital
+      if not closestDist or dist <= closestDist then
+          closestDist, closestHospital = dist, Config.RespawnPoints[i] 
+      end 
+  end 
+  
+  return closestHospital
 end
 
 function RemoveItemsAfterRPDeath()
@@ -319,12 +318,12 @@ function RemoveItemsAfterRPDeath()
 
   CreateThread(function()
     ESX.TriggerServerCallback('esx_ambulancejob:removeItemsAfterRPDeath', function()
-      local RespawnCoords, ClosestHospital = GetClosestRespawnPoint()
+      local ClosestHospital = GetClosestRespawnPoint()
 
       ESX.SetPlayerData('loadout', {})
 
       DoScreenFadeOut(800)
-      RespawnPed(PlayerPedId(), RespawnCoords, ClosestHospital.heading)
+      RespawnPed(PlayerPedId(), ClosestHospital.coords, ClosestHospital.heading)
       while not IsScreenFadedOut() do
         Wait(0)
       end
