@@ -298,7 +298,7 @@ function StartDeathTimer()
   end)
 end
 
-function getClosestRespawnPoint()
+function GetClosestRespawnPoint()
   local plyCoords = GetEntityCoords(PlayerPedId())
   local closestDist, closestHospital 
 
@@ -318,7 +318,7 @@ function RemoveItemsAfterRPDeath()
 
   CreateThread(function()
     ESX.TriggerServerCallback('esx_ambulancejob:removeItemsAfterRPDeath', function()
-      local ClosestHospital = getClosestRespawnPoint()
+      local ClosestHospital = GetClosestRespawnPoint()
 
       ESX.SetPlayerData('loadout', {})
 
