@@ -585,7 +585,7 @@ AddEventHandler('esx_ambulancejob:PlayerDistressed', function(playerId, playerCo
 		if Config.Debug then
 			print("[^2INFO^7] Player Distress Recived - ID:^5" .. tostring(playerId) .. "^7")
 		end
-		ESX.ShowNotification("[DISPATCH]: An Unconscious Person Has Been Reported", "error", 10000)
+		ESX.ShowNotification(TranslateCap('unconscious_found'), "error", 10000)
 		deadPlayerBlips[playerId] = nil
 
 		local blip = AddBlipForCoord(playerCoords.x, playerCoords.y, playerCoords.z)

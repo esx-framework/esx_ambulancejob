@@ -53,6 +53,7 @@ Locales['en'] = {
   ['medikit'] = 'Medikit',
   ['bandage'] = 'Bandage',
   ['max_item'] = 'You are already carrying enough.',
+  ['unconscious_found'] = '[DISPATCH]: An Unconscious Person Has Been Reported',
   -- F6 Menu
   ['ems_menu'] = 'EMS Menu',
   ['ems_menu_title'] = 'Ambulance - EMS Menu',
