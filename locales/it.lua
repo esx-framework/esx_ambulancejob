@@ -53,6 +53,7 @@ Locales['it'] = {
   ['medikit'] = 'Medikit',
   ['bandage'] = 'Benda',
   ['max_item'] = 'Hai già abbastanza oggetti.',
+  ['unconscious_found'] = '[CENTRALINO]: È stata segnalata una persona priva di sensi',
 -- Menu F6
   ['ems_menu'] = 'Menu EMS',
   ['ems_menu_title'] = 'Ambulanza - Menu EMS',
