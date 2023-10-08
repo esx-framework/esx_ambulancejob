@@ -53,6 +53,7 @@ Locales['de'] = {
   ['medikit'] = 'Verbandskasten',
   ['bandage'] = 'Verband',
   ['max_item'] = 'Du trägst bereits genug.',
+  ['unconscious_found'] = '[LEITSTELLE]: Uns wurde eine Bewusstlose Person gemeldet',
   -- F6 Menu
   ['ems_menu'] = 'Rettungsdienst Menü',
   ['ems_menu_title'] = 'Rettungsdienst - Menü',
