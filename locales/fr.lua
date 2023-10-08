@@ -53,6 +53,7 @@ Locales['fr'] = {
   ['medikit'] = 'kit de soin',
   ['bandage'] = 'bandage',
   ['max_item'] = 'vous en portez déjà assez sur vous.',
+  ['unconscious_found'] = '[DISPATCH]: Une personne inconsciente a été signalée',
   -- F6 Menu
   ['ems_menu'] = 'interaction citoyen',
   ['ems_menu_title'] = 'ambulance - Interactions Citoyen',
