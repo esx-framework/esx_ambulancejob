@@ -79,6 +79,7 @@ Locales['sl'] = {
   ['not_enough_medikit'] = 'Vi nimate Prve Pomoči.',
   ['not_enough_bandage'] = 'Vi nimate Bandaž.',
   ['healed'] = 'Vi ste bili pozdravljeni.',
+  ['unconscious_found'] = '[DISPATCH]: Porocanje o nezavestni osebi',
   -- Blipi
   ['blip_hospital'] = 'UKC',
   ['blip_dead'] = 'Umiranje Osebe',
