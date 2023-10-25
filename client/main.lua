@@ -53,7 +53,6 @@ CreateThread(function()
 
   while true do
     if isDead then
-      Sleep = 0
       DisableAllControlActions(0)
       EnableControlAction(0, 47, true) -- G 
       EnableControlAction(0, 245, true) -- T
@@ -362,7 +361,7 @@ AddEventHandler('esx_ambulancejob:revive', function()
   DoScreenFadeOut(800)
 
   while not IsScreenFadedOut() do
-    Wait(50)
+    Wait(0)
   end
 
   local formattedCoords = {x = ESX.Math.Round(coords.x, 1), y = ESX.Math.Round(coords.y, 1), z = ESX.Math.Round(coords.z, 1)}
