@@ -24,12 +24,11 @@ AddEventHandler('esx:onPlayerSpawn', function()
 
     if Config.SaveDeathStatus then
       while not ESX.PlayerLoaded do
-        Wait(1000)
+        Wait(0)
       end
 
       ESX.TriggerServerCallback('esx_ambulancejob:getDeathStatus', function(shouldDie)
         if shouldDie then
-          Wait(1000)
           SetEntityHealth(PlayerPedId(), 0)
         end
       end)
@@ -53,10 +52,7 @@ CreateThread(function()
   end
 
   while true do
-    local Sleep = 1500
-
     if isDead then
-      Sleep = 0
       DisableAllControlActions(0)
       EnableControlAction(0, 47, true) -- G 
       EnableControlAction(0, 245, true) -- T
@@ -75,7 +71,7 @@ CreateThread(function()
       end
     end
 
-    Wait(Sleep)
+    Wait(0)
   end
 end)
 
@@ -323,10 +319,10 @@ function RemoveItemsAfterRPDeath()
       ESX.SetPlayerData('loadout', {})
 
       DoScreenFadeOut(800)
-      RespawnPed(PlayerPedId(), ClosestHospital.coords, ClosestHospital.heading)
       while not IsScreenFadedOut() do
         Wait(0)
       end
+      RespawnPed(PlayerPedId(), ClosestHospital.coords, ClosestHospital.heading)
       DoScreenFadeIn(800)
     end)
   end)
@@ -365,7 +361,7 @@ AddEventHandler('esx_ambulancejob:revive', function()
   DoScreenFadeOut(800)
 
   while not IsScreenFadedOut() do
-    Wait(50)
+    Wait(0)
   end
 
   local formattedCoords = {x = ESX.Math.Round(coords.x, 1), y = ESX.Math.Round(coords.y, 1), z = ESX.Math.Round(coords.z, 1)}
