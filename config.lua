@@ -16,6 +16,12 @@ Config.DistressBlip = {
 	Scale = 2.0
 }
 
+Config.zoom = {
+	min = 1, 
+	max = 6, 
+	step = 0.5
+}
+
 Config.EarlyRespawnTimer          = 60000 * 1  -- time til respawn is available
 Config.BleedoutTimer              = 60000 * 10 -- time til the player bleeds out
 

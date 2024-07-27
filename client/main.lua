@@ -1,5 +1,4 @@
 local firstSpawn = true
-
 isDead, isSearched, medic = false, false, 0
 
 RegisterNetEvent('esx:playerLoaded')
@@ -51,32 +50,6 @@ CreateThread(function()
     AddTextComponentSubstringPlayerName(TranslateCap('blip_hospital'))
     EndTextCommandSetBlipName(blip)
   end
-
-  while true do
-    local Sleep = 1500
-
-    if isDead then
-      Sleep = 0
-      DisableAllControlActions(0)
-      EnableControlAction(0, 47, true) -- G 
-      EnableControlAction(0, 245, true) -- T
-      EnableControlAction(0, 38, true) -- E
-
-      ProcessCamControls()
-      if isSearched then
-        local playerPed = PlayerPedId()
-        local ped = GetPlayerPed(GetPlayerFromServerId(medic))
-        isSearched = false
-
-        AttachEntityToEntity(playerPed, ped, 11816, 0.54, 0.54, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
-        Wait(1000)
-        DetachEntity(playerPed, true, false)
-        ClearPedTasksImmediately(playerPed)
-      end
-    end
-
-    Wait(Sleep)
-  end
 end)
 
 RegisterNetEvent('esx_ambulancejob:clsearch')
@@ -99,7 +72,6 @@ AddEventHandler('esx_ambulancejob:clsearch', function(medicId)
 end)
 
 function OnPlayerDeath()
-  isDead = true
   ESX.CloseContext()
   ClearTimecycleModifier()
   SetTimecycleModifier("REDMIST_blend")
@@ -110,6 +82,8 @@ function OnPlayerDeath()
   TriggerServerEvent('esx_ambulancejob:setDeathStatus', true)
   StartDeathTimer()
   StartDeathCam()
+  isDead = true
+  StartDeathLoop() 
   StartDistressSignal()
 end
 
@@ -155,6 +129,29 @@ AddEventHandler('esx_ambulancejob:useItem', function(itemName)
   end
 end)
 
+function StartDeathLoop() 
+  CreateThread(function()
+    while isDead do
+      DisableAllControlActions(0)
+      EnableControlAction(0, 47, true) -- G 
+      EnableControlAction(0, 245, true) -- T
+      EnableControlAction(0, 38, true) -- E
+
+      ProcessCamControls() 
+      if isSearched then
+        local playerPed = PlayerPedId()
+        local ped = GetPlayerPed(GetPlayerFromServerId(medic))
+        isSearched = false
+
+        AttachEntityToEntity(playerPed, ped, 11816, 0.54, 0.54, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
+        Wait(1000)
+        DetachEntity(playerPed, true, false)
+        ClearPedTasksImmediately(playerPed)
+      end
+  end
+  end)
+end
+
 function StartDistressSignal()
   CreateThread(function()
     local timer = Config.BleedoutTimer
@@ -169,7 +166,7 @@ function StartDistressSignal()
       SetTextDropshadow(0.1, 3, 27, 27, 255)
       BeginTextCommandDisplayText('STRING')
       AddTextComponentSubstringPlayerName(TranslateCap('distress_send'))
-      EndTextCommandDisplayText(0.43, 0.77)
+      EndTextCommandDisplayText(0.446, 0.77)
 
       if IsControlJustReleased(0, 47) then
         SendDistressSignal()
@@ -375,107 +372,11 @@ AddEventHandler('esx_ambulancejob:revive', function()
   ClearTimecycleModifier()
   SetPedMotionBlur(playerPed, false)
   ClearExtraTimecycleModifier()
-  EndDeathCam()
+  EndDeathCam() 
   DoScreenFadeIn(800)
 end)
 
 -- Load unloaded IPLs
 if Config.LoadIpl then
   RequestIpl('Coroner_Int_on') -- Morgue
-end
-
-local cam = nil
-
-local isDead = false
-
-local angleY = 0.0
-
-local angleZ = 0.0
-
--------------------------------------------------------
-
------------------DEATH CAMERA FUNCTIONS ---------------
-
---------------------------------------------------------
-
--- initialize camera
-
-function StartDeathCam()
-  ClearFocus()
-  local playerPed = PlayerPedId()
-  cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", GetEntityCoords(playerPed), 0, 0, 0, GetGameplayCamFov())
-  SetCamActive(cam, true)
-  RenderScriptCams(true, true, 1000, true, false)
-end
-
--- destroy camera
-
-function EndDeathCam()
-  ClearFocus()
-  RenderScriptCams(false, false, 0, true, false)
-  DestroyCam(cam, false)
-  cam = nil
-end
--- process camera controls
-function ProcessCamControls()
-  local playerPed = PlayerPedId()
-  local playerCoords = GetEntityCoords(playerPed)
-  -- disable 1st person as the 1st person camera can cause some glitches
-  DisableFirstPersonCamThisFrame()
-  -- calculate new position
-  local newPos = ProcessNewPosition()
-  SetFocusArea(newPos.x, newPos.y, newPos.z, 0.0, 0.0, 0.0)
-  -- set coords of cam
-  SetCamCoord(cam, newPos.x, newPos.y, newPos.z)
-  -- set rotation
-  PointCamAtCoord(cam, playerCoords.x, playerCoords.y, playerCoords.z + 0.5)
-end
-
-function ProcessNewPosition()
-  local mouseX = 0.0
-  local mouseY = 0.0
-  -- keyboard
-  if (IsInputDisabled(0)) then
-    -- rotation
-    mouseX = GetDisabledControlNormal(1, 1) * 8.0
-
-    mouseY = GetDisabledControlNormal(1, 2) * 8.0
-    -- controller
-  else
-    mouseX = GetDisabledControlNormal(1, 1) * 1.5
-
-    mouseY = GetDisabledControlNormal(1, 2) * 1.5
-  end
-
-  angleZ = angleZ - mouseX -- around Z axis (left / right)
-
-  angleY = angleY + mouseY -- up / down
-  -- limit up / down angle to 90°
-
-  if (angleY > 89.0) then
-    angleY = 89.0
-  elseif (angleY < -89.0) then
-    angleY = -89.0
-  end
-  local pCoords = GetEntityCoords(PlayerPedId())
-  local behindCam = {x = pCoords.x + ((Cos(angleZ) * Cos(angleY)) + (Cos(angleY) * Cos(angleZ))) / 2 * (5.5 + 0.5),
-
-                     y = pCoords.y + ((Sin(angleZ) * Cos(angleY)) + (Cos(angleY) * Sin(angleZ))) / 2 * (5.5 + 0.5),
-
-                     z = pCoords.z + ((Sin(angleY))) * (5.5 + 0.5)}
-  local rayHandle = StartShapeTestRay(pCoords.x, pCoords.y, pCoords.z + 0.5, behindCam.x, behindCam.y, behindCam.z, -1, PlayerPedId(), 0)
-
-  local a, hitBool, hitCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
-
-  local maxRadius = 1.9
-  if (hitBool and Vdist(pCoords.x, pCoords.y, pCoords.z + 0.5, hitCoords) < 5.5 + 0.5) then
-    maxRadius = Vdist(pCoords.x, pCoords.y, pCoords.z + 0.5, hitCoords)
-  end
-
-  local offset = {x = ((Cos(angleZ) * Cos(angleY)) + (Cos(angleY) * Cos(angleZ))) / 2 * maxRadius,
-                  y = ((Sin(angleZ) * Cos(angleY)) + (Cos(angleY) * Sin(angleZ))) / 2 * maxRadius, z = ((Sin(angleY))) * maxRadius}
-
-  local pos = {x = pCoords.x + offset.x, y = pCoords.y + offset.y, z = pCoords.z + offset.z}
-
-  return pos
 end
