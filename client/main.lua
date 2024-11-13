@@ -148,6 +148,7 @@ function StartDeathLoop()
         DetachEntity(playerPed, true, false)
         ClearPedTasksImmediately(playerPed)
       end
+      Wait(0)
   end
   end)
 end
