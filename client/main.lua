@@ -13,14 +13,15 @@ AddEventHandler('esx:onPlayerLogout', function()
 end)
 
 AddEventHandler('esx:onPlayerSpawn', function()
+  if firstSpawn then
+    firstSpawn = false
+    return
+  end
   isDead = false
   ClearTimecycleModifier()
   SetPedMotionBlur(PlayerPedId(), false)
   ClearExtraTimecycleModifier()
   EndDeathCam()
-  if firstSpawn then
-    firstSpawn = false
-  end
 end)
 
 -- Create blips
