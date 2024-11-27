@@ -13,27 +13,15 @@ AddEventHandler('esx:onPlayerLogout', function()
 end)
 
 AddEventHandler('esx:onPlayerSpawn', function()
+  if firstSpawn then
+    firstSpawn = false
+    return
+  end
   isDead = false
   ClearTimecycleModifier()
   SetPedMotionBlur(PlayerPedId(), false)
   ClearExtraTimecycleModifier()
   EndDeathCam()
-  if firstSpawn then
-    firstSpawn = false
-
-    if Config.SaveDeathStatus then
-      while not ESX.PlayerLoaded do
-        Wait(1000)
-      end
-
-      ESX.TriggerServerCallback('esx_ambulancejob:getDeathStatus', function(shouldDie)
-        if shouldDie then
-          Wait(1000)
-          SetEntityHealth(PlayerPedId(), 0)
-        end
-      end)
-    end
-  end
 end)
 
 -- Create blips
