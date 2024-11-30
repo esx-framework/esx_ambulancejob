@@ -318,6 +318,8 @@ function RemoveItemsAfterRPDeath()
   end)
 end
 
+RegisterNetEvent("esx_ambulancejob:RespawnAtHospital", RemoveItemsAfterRPDeath)
+
 function RespawnPed(ped, coords, heading)
   SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, false)
   NetworkResurrectLocalPlayer(coords.x, coords.y, coords.z, heading, true, false)
